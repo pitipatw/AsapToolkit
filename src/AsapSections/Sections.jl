@@ -183,9 +183,10 @@ struct CompoundSection <: AbstractPolygonalSection
         end
 
         #organize sections
-        solids = Vector{SolidSection}()
-        voids = Vector{VoidSection}()
 
+        # solids = Vector{SolidSection}()
+        # voids = Vector{VoidSection}()
+        
         # for section in sections
         #     if typeof(section) == SolidSection
         #         push!(solids, section)
