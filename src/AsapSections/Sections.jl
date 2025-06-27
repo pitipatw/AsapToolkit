@@ -17,6 +17,14 @@ mutable struct SolidSection <: PolygonalSection
     ymax::Float64
     E::Union{Float64, Nothing}
 
+
+    """
+        Default constructor
+    """
+    function SolidSection(points::Matrix{Float64}, points_circular::Matrix{Float64}, npoints::Int64, centroid::Vector{Float64}, area::Float64, Ix::Float64, Sx::Float64, Iy::Float64, Sy::Float64, xmin::Float64, xmax::Float64, ymin::Float64, ymax::Float64, E::Union{Float64, Nothing})
+        new(points, points_circular, npoints, centroid, area, Ix, Sx, Iy, Sy, xmin, xmax, ymin, ymax, E)
+    end
+    
     """
         SolidSection(points::Matrix{Float64})
 
