@@ -186,13 +186,16 @@ struct CompoundSection <: AbstractPolygonalSection
         solids = Vector{SolidSection}()
         voids = Vector{VoidSection}()
 
-        for section in sections
-            if typeof(section) == SolidSection
-                push!(solids, section)
-            else
-                push!(voids, section)
-            end
-        end
+        # for section in sections
+        #     if typeof(section) == SolidSection
+        #         push!(solids, section)
+        #     else
+        #         push!(voids, section)
+        #     end
+        # end
+        # Separate the input list into solids and voids without mutation
+        solids = filter(s -> isa(s, SolidSection), sections)
+        voids  = filter(s -> !isa(s, SolidSection), sections)
 
         xmin = minimum(getproperty.(sections, :xmin))
         xmax = maximum(getproperty.(sections, :xmax))
