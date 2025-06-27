@@ -120,7 +120,26 @@ mutable struct VoidSection <: PolygonalSection
         void = new(points, [points points[:, 1]], size(points, 2))
 
         #populate section properties
-        section_properties!(void)
+        
+        section_properties = compute_section_properties(points)
+
+
+
+        void = SolidSection(points,
+            [points points[:, 1]],
+            size(points, 2),
+            section_properties.centroid,
+            section_properties.area,
+            section_properties.Ix,
+            section_properties.Sx,
+            section_properties.Iy,
+            section_properties.Sy,
+            section_properties.xmin,
+            section_properties.xmax,
+            section_properties.ymin,
+            section_properties.ymax,
+            E
+        )
 
         return void
 
