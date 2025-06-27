@@ -61,6 +61,78 @@ function poly_area(points::Vector{Vector{Float64}})
 end
 
 """
+    compute_section_properties(points::Matrix{Float64})
+
+Compute the following section properties of a polygon:
+- area::Float64 area of polygon
+- centroid::Vector{Float64} centroid of polygon [Cx, Cy]
+- Ix::Float64 moment of inertia about X axis about centroid
+- Sx::Float64 critical section modulus about X axis about centroid
+- Iy::Float64 moment of inertia about Y axis about centroid
+- Sy::Float64 critical section modulus about Y axis about centroid
+"""
+function compute_section_properties(points::Matrix{Float64})
+    
+    #get number of points
+    npoints = size(points, 2)
+
+    #initialize
+    Ix = 0. #moment of inertia w/r/t global x
+    Iy = 0. #moment of inertia w/r/t global y
+    A = 0. #area
+    Ccx = 0. #centroid x-position
+    Ccy = 0. #centroid y-position
+
+    for i = 1:npoints
+        x1, y1 = points[:, i]
+        x2, y2 = i == npoints ? points[:, 1] : points[:, i+1]
+
+        base = (x1 * y2 - x2 * y1)
+        Cx_increment = (y1^2 + y1 * y2 + y2^2)
+        Cy_increment = (x1^2 + x1 * x2 + x2^2)
+
+        Ix += base * Cx_increment
+        Iy += base * Cy_increment
+
+        A += (x2 + x1) * (y2 - y1)
+
+        Ccx += Cx_increment * (x1 - x2)
+        Ccy += Cy_increment * (y2 - y1)
+    end
+
+    Ix /= 12
+    Iy /= 12
+    A /= 2
+    Cx = Ccy / (6 * A)
+    Cy = Ccx / (6 * A)
+
+    Ix = Ix - A * Cy^2
+    Iy = Iy - A * Cx^2
+
+    Sx_offset = maximum(abs.(extrema(points[2, :]) .- Cy))
+    Sy_offset = maximum(abs.(extrema(points[1, :]) .- Cx))
+
+    Sx = Ix / Sx_offset
+    Sy = Iy / Sy_offset
+
+    xmin, xmax = extrema(points[1, :])
+    ymin, ymax = extrema(points[2, :])
+
+        return (
+        centroid=[Cx, Cy],
+        area=A,
+        Ix=Ix,
+        Sx=Sx,
+        Iy=Iy,
+        Sy=Sy,
+        xmin=xmin,
+        xmax=xmax,
+        ymin=ymin,
+        ymax=ymax
+    )
+end
+
+"""
     section_properties!(solid::Polygon)
 
 Populates the following section properties of a polygon:

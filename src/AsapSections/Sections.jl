@@ -45,13 +45,24 @@ mutable struct SolidSection <: PolygonalSection
             reverse!(points, dims = 2)
         end
 
+        section_properties = compute_section_properties(points)
+        
         #make solid
-        solid = new(points, [points points[:, 1]], size(points, 2))
-
-        #populate section properties
-        section_properties!(solid)
-
-        solid.E = E
+        solid = SolidSection(points,
+            [points points[:, 1]],
+            size(points, 2),
+            section_properties.centroid,
+            section_properties.area,
+            section_properties.Ix,
+            section_properties.Sx,
+            section_properties.Iy,
+            section_properties.Sy,
+            section_properties.xmin,
+            section_properties.xmax,
+            section_properties.ymin,
+            section_properties.ymax,
+            E
+        )
 
         return solid
     end
@@ -186,7 +197,7 @@ struct CompoundSection <: AbstractPolygonalSection
 
         # solids = Vector{SolidSection}()
         # voids = Vector{VoidSection}()
-        
+
         # for section in sections
         #     if typeof(section) == SolidSection
         #         push!(solids, section)
