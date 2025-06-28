@@ -48,7 +48,7 @@ mutable struct SolidSection <: PolygonalSection
         section_properties = compute_section_properties(points)
         
         #make solid
-        solid = SolidSection(points,
+        solid = new(points,
             [points points[:, 1]],
             size(points, 2),
             section_properties.centroid,
@@ -123,9 +123,7 @@ mutable struct VoidSection <: PolygonalSection
         
         section_properties = compute_section_properties(points)
 
-
-
-        void = SolidSection(points,
+        void = new(points,
             [points points[:, 1]],
             size(points, 2),
             section_properties.centroid,
