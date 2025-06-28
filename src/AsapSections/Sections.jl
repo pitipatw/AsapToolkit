@@ -116,9 +116,6 @@ mutable struct VoidSection <: PolygonalSection
             reverse!(points, dims = 2)
         end
 
-        #make solid
-        void = new(points, [points points[:, 1]], size(points, 2))
-
         #populate section properties
         
         section_properties = compute_section_properties(points)
