@@ -135,8 +135,7 @@ mutable struct VoidSection <: PolygonalSection
             section_properties.xmin,
             section_properties.xmax,
             section_properties.ymin,
-            section_properties.ymax,
-            E
+            section_properties.ymax
         )
 
         return void
