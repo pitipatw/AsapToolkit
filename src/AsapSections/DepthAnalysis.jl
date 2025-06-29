@@ -135,10 +135,10 @@ function sutherland_hodgman_abs(section::PolygonalSection, y::Float64; return_se
         end
     end
 
+    @show new_polygon
     return_section ? typeof(section)(new_polygon) :  new_polygon
 
 end
-
 """
     depth_map(section::PolygonalSection, n::Integer = 250)
 
