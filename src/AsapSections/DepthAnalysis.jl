@@ -46,32 +46,35 @@ function sutherland_hodgman(section::PolygonalSection, depth::Float64; return_se
     @assert depth ≤ section.ymax - section.ymin
 
     #clipping edge
-    y_clip = section.ymax - depth
+    @show y_clip = section.ymax - depth
 
     e0 = [section.xmin - 1, y_clip]
     e1 = [section.xmax + 1, y_clip]
 
     #main algorithm
-    new_polygon = Vector{Vector{Float64}}()
+    # println("HERE")
+    @show new_polygon = Vector{Vector{Float64}}()
 
     for i = 1:npoints
-        @show p1 = section.points_circular[:, i]
-        @show p2 = section.points_circular[:, i + 1]
+        p1 = section.points_circular[:, i]
+        p2 = section.points_circular[:, i + 1]
+
+        @show p1, p2
 
         if p1[2] ≥ y_clip
             if p2[2] ≥ y_clip
-                vcat(new_polygon, [p2])
+                new_polygon = vcat(new_polygon, [p2])
                 # push!(new_polygon, p2)
             else
                 _, point = intersection(p1, p2, e0, e1)
-                vcat(new_polygon, [point])
+                new_polygon = vcat(new_polygon, [point])
                 # push!(new_polygon, point)
             end
         else
             if p2[2] ≥ y_clip
                 _, point = intersection(p1, p2, e0, e1)
-                vcat(new_polygon, [point])
-                vcat(new_polygon, [p2])
+                new_polygon = vcat(new_polygon, [point])
+                new_polygon = vcat(new_polygon, [p2])
                 # push!(new_polygon, point)
                 # push!(new_polygon, p2)
             end
@@ -79,8 +82,11 @@ function sutherland_hodgman(section::PolygonalSection, depth::Float64; return_se
         @show new_polygon
     end
 
-    return_section ? typeof(section)(new_polygon) :  new_polygon
-
+    if length(new_polygon) == 0 
+        return nothing
+    else
+        return return_section ? typeof(section)(new_polygon) :  new_polygon
+   end
 end
 
 """
@@ -118,17 +124,17 @@ function sutherland_hodgman_abs(section::PolygonalSection, y::Float64; return_se
             if p1[2] ≥ y_clip
                 if p2[2] ≥ y_clip
                     # push!(new_polygon, p2)
-                    vcat(new_polygon, [p2])
+                    new_polygon = vcat(new_polygon, [p2])
                 else
                     _, point = intersection(p1, p2, e0, e1)
-                    vcat(new_polygon, [point])
+                    new_polygon = vcat(new_polygon, [point])
                     # push!(new_polygon, point)
                 end
             else
                 if p2[2] ≥ y_clip
                     _, point = intersection(p1, p2, e0, e1)
-                    vcat(new_polygon, [point])
-                    vcat(new_polygon, [p2])
+                    new_polygon = vcat(new_polygon, [point])
+                    new_polygon = vcat(new_polygon, [p2])
                     # push!(new_polygon, point)
                     # push!(new_polygon, p2)
                 end
@@ -174,24 +180,24 @@ function depth_map(section::PolygonalSection, n::Integer = 250)
             if p1[2] ≥ y_clip
                 if p2[2] ≥ y_clip
                     # push!(new_polygon, p2)
-                    vcat(new_polygon, [p2])
+                    new_polygon = vcat(new_polygon, [p2])
                 else
                     _, point = intersection(p1, p2, e0, e1)
                     # push!(new_polygon, point)
-                    vcat(new_polygon, [point])
+                    new_polygon = vcat(new_polygon, [point])
                 end
             else
                 if p2[2] ≥ y_clip
                     _, point = intersection(p1, p2, e0, e1)
                     # push!(new_polygon, point)
                     # push!(new_polygon, p2)
-                    vcat(new_polygon, [point])
-                    vcat(new_polygon, [p2])
+                    new_polygon = vcat(new_polygon, [point])
+                    new_polygon = vcat(new_polygon, [p2])
                 end
             end
         end
 
-        vcat(Astore, poly_area(new_polygon))
+        Astore = vcat(Astore, poly_area(new_polygon))
         # push!(Astore, poly_area(new_polygon))
 
     end
@@ -217,13 +223,13 @@ function depth_map_abs(section::PolygonalSection, y_positions::Vector{Float64})
 
         if y > section.ymax
             # push!(Astore, 0.)
-            vcat(Astore, 0.)
+            Astore = vcat(Astore, 0.)
             continue
         end
 
         if y < section.ymin
             # push!(Astore, section.area)
-            vcat(Astore, section.area)
+            Astore = vcat(Astore, section.area)
             continue
         end
 
@@ -242,17 +248,17 @@ function depth_map_abs(section::PolygonalSection, y_positions::Vector{Float64})
             if p1[2] ≥ y_clip
                 if p2[2] ≥ y_clip
                     # push!(new_polygon, p2)
-                    vcat(new_polygon, [p2])
+                    new_polygon = vcat(new_polygon, [p2])
                 else
                     _, point = intersection(p1, p2, e0, e1)
                     # push!(new_polygon, point)
-                    vcat(new_polygon, [point])
+                    new_polygon = vcat(new_polygon, [point])
                 end
             else
                 if p2[2] ≥ y_clip
                     _, point = intersection(p1, p2, e0, e1)
-                    vcat(new_polygon, [point])
-                    vcat(new_polygon, [p2])
+                    new_polygon = vcat(new_polygon, [point])
+                    new_polygon = vcat(new_polygon, [p2])
                     # push!(new_polygon, point)
                     # push!(new_polygon, p2)
                 end
@@ -260,7 +266,7 @@ function depth_map_abs(section::PolygonalSection, y_positions::Vector{Float64})
         end
 
         # push!(Astore, poly_area(new_polygon))
-        vcat(Astore, poly_area(new_polygon))
+        Astore = vcat(Astore, poly_area(new_polygon))
 
     end
 
@@ -359,19 +365,19 @@ function depth_from_area(section::PolygonalSection, area::Float64; max_iter = 50
             if p1[2] ≥ y_clip
                 if p2[2] ≥ y_clip
                     # push!(new_polygon, p2)
-                    vcat(new_polygon, [p2])
+                    new_polygon = vcat(new_polygon, [p2])
                 else
                     _, point = intersection(p1, p2, e0, e1)
                     # push!(new_polygon, point)
-                    vcat(new_polygon, [point])
+                    new_polygon = vcat(new_polygon, [point])
                 end
             else
                 if p2[2] ≥ y_clip
                     _, point = intersection(p1, p2, e0, e1)
                     # push!(new_polygon, point)
                     # push!(new_polygon, p2)
-                    vcat(new_polygon, [point])
-                    vcat(new_polygon, [p2])
+                    new_polygon = vcat(new_polygon, [point])
+                    new_polygon = vcat(new_polygon, [p2])
                 end
             end
         end

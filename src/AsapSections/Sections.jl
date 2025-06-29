@@ -75,7 +75,7 @@ mutable struct SolidSection <: PolygonalSection
     function SolidSection(points::Vector{Vector{Float64}}, E = nothing)
 
         points = hcat(points...)
-
+        
         SolidSection(points)
 
     end
