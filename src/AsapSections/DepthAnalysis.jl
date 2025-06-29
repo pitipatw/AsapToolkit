@@ -55,8 +55,8 @@ function sutherland_hodgman(section::PolygonalSection, depth::Float64; return_se
     new_polygon = Vector{Vector{Float64}}()
 
     for i = 1:npoints
-        p1 = section.points_circular[:, i]
-        p2 = section.points_circular[:, i + 1]
+        @show p1 = section.points_circular[:, i]
+        @show p2 = section.points_circular[:, i + 1]
 
         if p1[2] ≥ y_clip
             if p2[2] ≥ y_clip
