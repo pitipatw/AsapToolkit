@@ -76,6 +76,7 @@ function sutherland_hodgman(section::PolygonalSection, depth::Float64; return_se
                 # push!(new_polygon, p2)
             end
         end
+        @show new_polygon
     end
 
     return_section ? typeof(section)(new_polygon) :  new_polygon
@@ -135,7 +136,6 @@ function sutherland_hodgman_abs(section::PolygonalSection, y::Float64; return_se
         end
     end
 
-    # @show new_polygon
     return_section ? typeof(section)(new_polygon) :  new_polygon
 
 end
