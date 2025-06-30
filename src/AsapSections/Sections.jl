@@ -42,7 +42,7 @@ mutable struct SolidSection <: PolygonalSection
 
         #ensure order of points is counterclockwise
         if !is_counter_clockwise(points)
-            reverse!(points, dims = 2)
+            points = reverse(points, dims = 2)
         end
 
         section_properties = compute_section_properties(points)
@@ -75,7 +75,7 @@ mutable struct SolidSection <: PolygonalSection
     function SolidSection(points::Vector{Vector{Float64}}, E = nothing)
 
         points = hcat(points...)
-        
+
         SolidSection(points)
 
     end
@@ -113,7 +113,7 @@ mutable struct VoidSection <: PolygonalSection
 
         #ensure order of points is clockwise
         if is_counter_clockwise(points)
-            reverse!(points, dims = 2)
+            points = reverse(points, dims = 2)
         end
 
         #populate section properties
