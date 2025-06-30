@@ -27,6 +27,7 @@ function intersection(p1::T, p2::T, p3::T, p4::T) where {T <: AbstractVector{Flo
     if 0 ≤ t ≤ 1
         return true, p1 + t * (p2 .- p1)
     else
+        println("HI")
         return false, nothing
     end
 
