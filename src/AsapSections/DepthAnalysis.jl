@@ -82,7 +82,8 @@ function sutherland_hodgman(section::PolygonalSection, depth::Float64; return_se
         @show new_polygon
     end
 
-    if length(new_polygon) == 0 
+    if length(new_polygon) == 0
+        println("HI")
         return nothing
     else
         return return_section ? typeof(section)(new_polygon) :  new_polygon
