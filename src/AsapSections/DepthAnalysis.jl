@@ -67,7 +67,7 @@ function sutherland_hodgman(section::PolygonalSection, depth::Float64; return_se
                 new_polygon = vcat(new_polygon, [p2])
                 # push!(new_polygon, p2)
             else
-                _, point = intersection(p1, p2, e0, e1)
+                @show _, point = intersection(p1, p2, e0, e1)
                 new_polygon = vcat(new_polygon, [point])
                 # push!(new_polygon, point)
             end
