@@ -27,7 +27,7 @@ function intersection(p1::T, p2::T, p3::T, p4::T) where {T <: AbstractVector{Flo
     if 0 ≤ t ≤ 1
         return true, p1 + t * (p2 .- p1)
     else
-        println("HI")
+        println("'intersection' returns (false, nothing)")
         return false, nothing
     end
 
@@ -47,27 +47,25 @@ function sutherland_hodgman(section::PolygonalSection, depth::Float64; return_se
     @assert depth ≤ section.ymax - section.ymin
 
     #clipping edge
-    @show y_clip = section.ymax - depth
+    y_clip = section.ymax - depth
 
     e0 = [section.xmin - 1, y_clip]
     e1 = [section.xmax + 1, y_clip]
 
     #main algorithm
     # println("HERE")
-    @show new_polygon = Vector{Vector{Float64}}()
+    new_polygon = Vector{Vector{Float64}}()
 
     for i = 1:npoints
         p1 = section.points_circular[:, i]
         p2 = section.points_circular[:, i + 1]
-
-        @show p1, p2
 
         if p1[2] ≥ y_clip
             if p2[2] ≥ y_clip
                 new_polygon = vcat(new_polygon, [p2])
                 # push!(new_polygon, p2)
             else
-                @show _, point = intersection(p1, p2, e0, e1)
+                _, point = intersection(p1, p2, e0, e1)
                 new_polygon = vcat(new_polygon, [point])
                 # push!(new_polygon, point)
             end
@@ -80,7 +78,7 @@ function sutherland_hodgman(section::PolygonalSection, depth::Float64; return_se
                 # push!(new_polygon, p2)
             end
         end
-        @show new_polygon
+        # @show new_polygon
     end
 
     if length(new_polygon) == 0
